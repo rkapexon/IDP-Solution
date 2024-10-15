@@ -86,8 +86,8 @@ def customer_form_view(request):
         form = CustomerForm(initial=initial_values)  #
     return render(request,'customer_form.html',{'form':form})
 
-# def getDBValues(request):
-#  return render(request,"Thank you")
+def getDBValues(request):
+ return render(request,"Thank you")
 
-# def getDBValues(request):
-#     return True
+def getDBValues(request):
+    return True

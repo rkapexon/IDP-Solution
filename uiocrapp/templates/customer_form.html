@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Info Form</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: space-between;
+            background-color: lightblue;
+            padding: 20px;
+        }
+        .form-container {
+            width: 45%;  /* Left side width */
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .image-container {
+            width: 45%;  /* Right side width */
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .error {
+            color: red;
+            font-size: 0.9em;
+        }
+        img {
+            max-width: 100%;
+            max-height: 400px;
+        }
+    </style>
+</head>
+<body>
+ 
+    <div class="form-container">
+        <h2>Customer Information Form</h2>
+        <form id="customerForm" method="post">
+            {% csrf_token %}
+            <input type="hidden" id="file_name" name="file_name" > 
+            <div>
+                {{ form.full_name.label_tag }}
+                {{ form.full_name }}
+                {% if form.full_name.errors %}
+                    <div class="error">{{ form.full_name.errors.as_text }}</div>
+                {% endif %}
+            </div>
+            <br>
+            <div>
+                {{ form.bank_name.label_tag }}
+                {{ form.bank_name }}
+            </div>
+            <br>
+            <div>
+                {{ form.zip_code.label_tag }}
+                {{ form.zip_code }}
+            </div>
+            <br>
+            <div>
+                {{ form.state.label_tag }}
+                {{ form.state }}
+            </div>
+            <br>
+            <div>
+                {{ form.country_code.label_tag }}
+                {{ form.country_code }}
+            </div>
+            <br>
+            <div>
+                {{ form.phone_number.label_tag }}
+                {{ form.phone_number }}
+                {% if form.phone_number.errors %}
+                    <div class="error">{{ form.phone_number.errors.as_text }}</div>
+                {% endif %}
+            </div>
+            <br>
+            <div>
+                {{ form.account_number.label_tag }}
+                {{ form.account_number }}
+            </div>
+            <br>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+ 
+    <div class="image-container">
+        <h2>Upload Image:</h2>
+        <input type="file" id="imageUpload" class="image-upload" accept="image/*">
+        <h2>Selected Image:</h2>
+        <img id="imagePreview" src="" alt="Selected image" style="display:none;">
+    </div>
+ 
+    <script>
+        // document.getElementById('imageUpload').addEventListener('change', function(event) {
+        //     const file = event.target.files[0];
+        //     const imagePreview = document.getElementById('imagePreview');
+        //     if (file) {
+        //         const reader = new FileReader();
+        //         reader.onload = function(e) {
+        //             imagePreview.src = e.target.result;
+        //             imagePreview.style.display = 'block';  // Show the new image
+        //         }
+        //         reader.readAsDataURL(file);
+        //     } else {
+        //         imagePreview.style.display = 'none'; // Hide if no file is selected
+        //     }
+        // });
+        window.onload = function() {
+        const storedImage = localStorage.getItem('uploadedImage');
+        if (storedImage) {
+            const imagePreview = document.getElementById('imagePreview');
+            imagePreview.src = storedImage;
+            imagePreview.style.display = 'block'; // Show the image
+        }
+    };
+
+    // Handle image upload
+    document.getElementById('imageUpload').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        const imagePreview = document.getElementById('imagePreview');
+        const fileNameInput = document.getElementById('file_name');
+
+        if (file) {
+            fileNameInput.value = file.name;
+
+                // Fetch initial values from the server
+                const formData = new FormData();
+                formData.append('file_name', file.name);
+
+                fetch("{% url 'customer_form' %}", {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Populate form fields with the received data
+                    document.getElementById('id_full_name').value = data.full_name || '';
+                    document.getElementById('id_bank_name').value = data.bank_name || '';
+                    document.getElementById('id_zip_code').value = data.zip_code || '';
+                    document.getElementById('id_state').value = data.state || '';
+                    document.getElementById('id_country_code').value = data.country_code || '';
+                    document.getElementById('id_phone_number').value = data.phone_number || '';
+                    document.getElementById('id_account_number').value = data.account_number || '';})
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                imagePreview.style.display = 'block';  // Show the new image
+                
+                localStorage.setItem('uploadedImage', e.target.result); // Store the image in local storage
+                fileNameInput.value = file.name;
+                console.log("File name set in hidden input:", fileNameInput.value);
+            }
+            reader.readAsDataURL(file);
+        } else {
+            imagePreview.style.display = 'none'; // Hide if no file is selected
+            localStorage.removeItem('uploadedImage'); // Clear storage if no file
+            fileNameInput.value = '';
+        }
+    });
+        
+    </script>
+
+     
+</body>
+</html>

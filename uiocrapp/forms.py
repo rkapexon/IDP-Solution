@@ -1,14 +1,14 @@
 from django import forms
 from django.core.validators import RegexValidator
- 
+
 country_codes = [
-    ('+1','United States (+1)'),
-    ('+44','United Kingdom (+44)'),
-    ('+91','India (+91)'),
-    ('+61','Australia (+61)'),
-    ('+81','Japan (+81)'),
+    ('+1', 'United States (+1)'),
+    ('+44', 'United Kingdom (+44)'),
+    ('+91', 'India (+91)'),
+    ('+61', 'Australia (+61)'),
+    ('+81', 'Japan (+81)'),
 ]
- 
+
 us_states = {
     'AL': 'Alabama',
     'AK': 'Alaska',
@@ -62,11 +62,12 @@ us_states = {
     'WI': 'Wisconsin',
     'WY': 'Wyoming',
 }
- 
+
 class CustomerForm(forms.Form):
     full_name = forms.CharField(
         label="Customer Full Name",
         max_length=100,
+        required=False,
         widget=forms.TextInput(attrs={'placeholder': 'Full Name'}),
         validators=[RegexValidator(r'^[a-zA-Z\s]+$', message='Name can only contain letters and spaces.')]
     )
@@ -81,12 +82,12 @@ class CustomerForm(forms.Form):
         widget=forms.TextInput(attrs={'placeholder': '12345678'})
     )
     state = forms.ChoiceField(
-        choices = us_states,
+        choices=us_states,
         label="State",
         initial="AL",
     )
     country_code = forms.ChoiceField(
-        choices = country_codes,
+        choices=country_codes,
         label='Country Code',
         initial='+91',  # Default selected value (India)
     )
@@ -104,5 +105,5 @@ class CustomerForm(forms.Form):
         label="Uploaded File Name",
         max_length=100,
         required=False,  # Not required if it’s just for storing the file name
-        widget=forms.HiddenInput() 
+        widget=forms.HiddenInput()
     )

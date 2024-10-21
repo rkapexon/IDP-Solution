@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -12,14 +12,14 @@
             padding: 20px;
         }
         .form-container {
-            width: 45%;  /* Left side width */
+            width: 45%; /* Left side width */
             padding: 20px;
             background-color: white;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         .image-container {
-            width: 45%;  /* Right side width */
+            width: 45%; /* Right side width */
             padding: 20px;
             background-color: white;
             border-radius: 8px;
@@ -39,12 +39,11 @@
     </style>
 </head>
 <body>
- 
     <div class="form-container">
         <h2>Customer Information Form</h2>
         <form id="customerForm" method="post">
             {% csrf_token %}
-            <input type="hidden" id="file_name" name="file_name" > 
+            <input type="hidden" id="file_name" name="file_name">
             <div>
                 {{ form.full_name.label_tag }}
                 {{ form.full_name }}
@@ -89,88 +88,205 @@
             <button type="submit">Submit</button>
         </form>
     </div>
- 
+    <div id="valueContainer" class="value-container">
+        <h2 style="color:rgb(227, 227, 236);">Fetched Values:</h2>
+    </div>
     <div class="image-container">
         <h2>Upload Image:</h2>
         <input type="file" id="imageUpload" class="image-upload" accept="image/*">
         <h2>Selected Image:</h2>
         <img id="imagePreview" src="" alt="Selected image" style="display:none;">
     </div>
- 
     <script>
-        // document.getElementById('imageUpload').addEventListener('change', function(event) {
-        //     const file = event.target.files[0];
-        //     const imagePreview = document.getElementById('imagePreview');
-        //     if (file) {
-        //         const reader = new FileReader();
-        //         reader.onload = function(e) {
-        //             imagePreview.src = e.target.result;
-        //             imagePreview.style.display = 'block';  // Show the new image
-        //         }
-        //         reader.readAsDataURL(file);
-        //     } else {
-        //         imagePreview.style.display = 'none'; // Hide if no file is selected
-        //     }
-        // });
         window.onload = function() {
-        const storedImage = localStorage.getItem('uploadedImage');
-        if (storedImage) {
+            const storedImage = localStorage.getItem('uploadedImage');
+            if (storedImage) {
+                const imagePreview = document.getElementById('imagePreview');
+                imagePreview.src = storedImage;
+                imagePreview.style.display = 'block'; // Show the image
+            }
+        };
+
+        // Handle image upload
+        document.getElementById('imageUpload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
             const imagePreview = document.getElementById('imagePreview');
-            imagePreview.src = storedImage;
-            imagePreview.style.display = 'block'; // Show the image
-        }
-    };
+            const fileNameInput = document.getElementById('file_name');
 
-    // Handle image upload
-    document.getElementById('imageUpload').addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        const imagePreview = document.getElementById('imagePreview');
-        const fileNameInput = document.getElementById('file_name');
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block'; // Show the new image
+                    fileNameInput.value = file.name;
+                    localStorage.setItem('uploadedImage', e.target.result); // Store the image in local storage
+                    fetchValuesFromDatabase(file.name);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                imagePreview.style.display = 'none'; // Hide if no file is selected
+                localStorage.removeItem('uploadedImage'); // Clear storage if no file
+                fileNameInput.value = '';
+            }
+        });
 
-        if (file) {
-            fileNameInput.value = file.name;
-
-                // Fetch initial values from the server
-                const formData = new FormData();
-                formData.append('file_name', file.name);
-
-                fetch("{% url 'customer_form' %}", {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}'
-                    }
-                })
+        function fetchValuesFromDatabase(fileName) {
+            fetch(`/get-values/?file_name=${fileName}`)
                 .then(response => response.json())
                 .then(data => {
-                    // Populate form fields with the received data
-                    document.getElementById('id_full_name').value = data.full_name || '';
-                    document.getElementById('id_bank_name').value = data.bank_name || '';
-                    document.getElementById('id_zip_code').value = data.zip_code || '';
-                    document.getElementById('id_state').value = data.state || '';
-                    document.getElementById('id_country_code').value = data.country_code || '';
-                    document.getElementById('id_phone_number').value = data.phone_number || '';
-                    document.getElementById('id_account_number').value = data.account_number || '';})
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                imagePreview.src = e.target.result;
-                imagePreview.style.display = 'block';  // Show the new image
-                
-                localStorage.setItem('uploadedImage', e.target.result); // Store the image in local storage
-                fileNameInput.value = file.name;
-                console.log("File name set in hidden input:", fileNameInput.value);
-            }
-            reader.readAsDataURL(file);
-        } else {
-            imagePreview.style.display = 'none'; // Hide if no file is selected
-            localStorage.removeItem('uploadedImage'); // Clear storage if no file
-            fileNameInput.value = '';
+                    displayValues(data);
+                })
+                .catch(error => console.error('Error fetching values:', error));
         }
-    });
-        
-    </script>
 
-     
+        function displayValues(data) {
+            // Update the UI with the fetched data
+            const valueContainer = document.getElementById('valueContainer');
+            valueContainer.innerHTML = '';
+            for (const [key, value] of Object.entries(data)) {
+                const div = document.createElement('div');
+                div.textContent = `${key}: ${value}`;
+                valueContainer.appendChild(div);
+            }
+        }
+    </script>
+</body>
+</html> 
+
+
+ -->
+
+
+
+
+
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Info Form</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: space-between;
+            background-color: lightblue;
+            padding: 20px;
+        }
+        .form-container, .image-container {
+            width: 45%;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .form-container { margin-right: 10px; }
+        .image-container { display: flex; flex-direction: column; align-items: center; }
+        .error { color: red; font-size: 0.9em; }
+        img { max-width: 100%; max-height: 400px; }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Customer Information Form</h2>
+        <form id="customerForm" method="post">
+            {% csrf_token %}
+            <input type="hidden" id="file_name" name="file_name">
+            <div>
+                {{ form.full_name.label_tag }} 
+                <input type="text" id="full_name" name="full_name" placeholder="Full Name" value="{{ form.full_name.value|default:'' }}">
+                {% if form.full_name.errors %}
+                    <div class="error">{{ form.full_name.errors.as_text }}</div>
+                {% endif %}
+            </div>
+            <br>
+            <div>{{ form.bank_name.label_tag }} 
+                <input type="text" id="bank_name" name="bank_name" placeholder="Bank Name" value="{{ form.bank_name.value|default:'' }}">
+            </div>
+            <br>
+            <div>{{ form.zip_code.label_tag }} 
+                <input type="text" id="zip_code" name="zip_code" placeholder="Zip Code" value="{{ form.zip_code.value|default:'' }}">
+            </div>
+            <br>
+            <div>{{ form.state.label_tag }} {{ form.state }}</div>
+            <br>
+            <div>{{ form.country_code.label_tag }} {{ form.country_code }}</div>
+            <br>
+            <div>
+                {{ form.phone_number.label_tag }} 
+                <input type="text" id="phone_number" name="phone_number" placeholder="Phone Number" value="{{ form.phone_number.value|default:'' }}">
+                {% if form.phone_number.errors %}
+                    <div class="error">{{ form.phone_number.errors.as_text }}</div>
+                {% endif %}
+            </div>
+            <br>
+            <div>{{ form.account_number.label_tag }} 
+                <input type="text" id="account_number" name="account_number" placeholder="Account Number" value="{{ form.account_number.value|default:'' }}">
+            </div>
+            <br>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div id="valueContainer" class="value-container">
+        <h2 style="color:rgb(227, 227, 236);">Fetched Values:</h2>
+    </div>
+
+    <div class="image-container">
+        <h2>Upload Image:</h2>
+        <input type="file" id="imageUpload" class="image-upload" accept="image/*">
+        <h2>Selected Image:</h2>
+        <img id="imagePreview" src="" alt="Selected image" style="display:none;">
+    </div>
+
+    <script>
+        window.onload = function() {
+            const storedImage = localStorage.getItem('uploadedImage');
+            if (storedImage) {
+                const imagePreview = document.getElementById('imagePreview');
+                imagePreview.src = storedImage;
+                imagePreview.style.display = 'block';
+            }
+        };
+
+        document.getElementById('imageUpload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const imagePreview = document.getElementById('imagePreview');
+            const fileNameInput = document.getElementById('file_name');
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                    fileNameInput.value = file.name;
+                    localStorage.setItem('uploadedImage', e.target.result);
+                    fetchValuesFromDatabase(file.name);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                imagePreview.style.display = 'none';
+                localStorage.removeItem('uploadedImage');
+                fileNameInput.value = '';
+            }
+        });
+
+        function fetchValuesFromDatabase(fileName) {
+            fetch(`/get-values/?file_name=${fileName}`)
+                .then(response => response.json())
+                .then(data => {
+                    displayValues(data);
+                })
+                .catch(error => console.error('Error fetching values:', error));
+        }
+
+        function displayValues(data) {
+            // Update form placeholders with fetched data
+            document.getElementById('full_name').placeholder = data.full_name || "Full Name";
+            document.getElementById('bank_name').placeholder = data.bank_name || "Bank Name";
+            document.getElementById('zip_code').placeholder = data.zip_code || "Zip Code";
+            document.getElementById('phone_number').placeholder = data.phone_number || "Phone Number";
+            document.getElementById('account_number').placeholder = data.account_number || "Account Number";
+        }
+    </script>
 </body>
 </html>

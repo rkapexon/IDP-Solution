@@ -11,4 +11,5 @@ urlpatterns=[
     path('',views.customer_form_view),
     # path('getValuesFromDB', views.getDBValues),
     # path('getFileFromOutbound',views.getDBValues)
+     path('get-values/', views.get_values_view, name='get_values'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

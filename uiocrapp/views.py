@@ -1,3 +1,4 @@
+
 # Create your views here.
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
@@ -5,6 +6,21 @@ from .forms import CustomerForm
 from .models import CustomerInfo,mydb
 from django.db import connection
 import os
+from django.http import JsonResponse
+
+
+def get_values_view(request):
+    file_name = request.GET.get('file_name', '')
+    file_name_without_ext = os.path.splitext(file_name)[0]
+    
+    # Query the secondary database
+    records = mydb.objects.using('secondary').filter(formid__startswith=file_name_without_ext)
+    
+    # Prepare the data to return
+    data = {record.field_name: record.OCR_value for record in records}
+    
+    return JsonResponse(data)
+
 
 def update_origdb(file_name,customer_info):
     og_db = [
@@ -38,30 +54,7 @@ def update_origdb(file_name,customer_info):
                orig_record.save(using='secondary')
                print(f"Updated {orig_record.field_name} from {orig_record.OCR_value} to {new_value}")
 
-def initial_value(file_name):
-    field_mapping = {
-        'Customer_full_name': 'full_name',
-        'BankName': 'bank_name',
-        'Zipcode': 'zip_code',
-        'State': 'state',
-        'Phone_number': 'phone_number',
-        'Account_number': 'account_number',
-        'Country_code': 'country_code',  # If applicable
-    }
-    initial_values = {key: '' for key in field_mapping.values()}
-    file_name_without_ext = os.path.splitext(file_name)[0]
-    orig_records = mydb.objects.using('secondary').filter(formid__startswith=file_name_without_ext)
-    for orig_record in orig_records:
-            form_field = field_mapping.get(orig_record.field_name)
-            if form_field:  # Check if the field exists in the mapping
-                initial_values[form_field] = orig_record.OCR_value
-    return initial_values
-
-
-
-
-def customer_form_view(request):  
-    initial_values = {}   
+def customer_form_view(request):     
     if request.method == 'POST':
         form = CustomerForm(request.POST)
         if form.is_valid():
@@ -80,14 +73,5 @@ def customer_form_view(request):
             update_origdb(file_name,customer_info)
                        
     else:
-        file_name = request.GET.get('file_name', None)
-        if file_name:
-            initial_values = initial_value(file_name)  # Fetch initial values from the database
-        form = CustomerForm(initial=initial_values)  #
+        form = CustomerForm()
     return render(request,'customer_form.html',{'form':form})
-
-def getDBValues(request):
- return render(request,"Thank you")
-
-def getDBValues(request):
-    return True

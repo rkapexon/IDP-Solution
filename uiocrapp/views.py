@@ -18,7 +18,7 @@ def get_values_view(request):
     
     # Prepare the data to return
     data = {record.field_name: record.OCR_value for record in records}
-    
+    print(data)
     return JsonResponse(data)
 
 

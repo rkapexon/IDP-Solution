@@ -68,7 +68,7 @@ class CustomerForm(forms.Form):
         label="Customer Full Name",
         max_length=100,
         required=False,
-        widget=forms.TextInput(attrs={'placeholder': 'Full Name'}),
+        #widget=forms.TextInput(attrs={'placeholder': 'Full Name'}),
         validators=[RegexValidator(r'^[a-zA-Z\s]+$', message='Name can only contain letters and spaces.')]
     )
     bank_name = forms.CharField(

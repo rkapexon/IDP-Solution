@@ -1,8 +1,7 @@
-from django.db import models 
-# Create your models here. 
-# # Create your models here. 
+from django.db import models
 from django.core.validators import RegexValidator 
 from phonenumber_field.modelfields import PhoneNumberField 
+# Create your models here.
 class CustomerInfo(models.Model): 
     full_name = models.CharField(max_length=100) 
     bank_name = models.CharField(max_length=100) 
@@ -12,6 +11,10 @@ class CustomerInfo(models.Model):
     phone_number = PhoneNumberField(max_length=15) 
     account_number = models.CharField(max_length=15) 
     file_name = models.CharField(max_length=100, blank=True, null=True) 
+    Date=models.CharField(max_length=15)
+    Amount=models.CharField(max_length=100)
+    Address=models.CharField(max_length=100)
+    FileName=models.CharField(max_length=50)
     def __str__(self): 
         return self.full_name 
 class mydb(models.Model): 

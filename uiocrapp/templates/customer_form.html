@@ -4,34 +4,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Info Form</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Lobster&display=swap"
+        rel="stylesheet">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}"> <!-- Link to your style CSS file -->
+    <header>
+        <img src="static/images/Logo.jpg" alt="Logo" id="logo">
+    </header>
+
+    <div class="header">
+        <h1>Intelligent Document Processing</h1>
+
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-container">
+        <input type="text" placeholder="Search documents..." id="searchInput " autocomplete="on">
+        <button id="searchButton">Search</button>
+        <input type="file" id="fileInput" style="display: none;" color:whte />
+        <div id="suggestionsBox" class="suggestions"></div>
+        <!-- Hidden File Input -->
+
+    </div>
+  
     <style>
+        /* CSS for img-based logo */
+        .company-logo {
+            width: 10px;
+            height: fit-content;
+            position: absolute;
+
+        }
+
+        /* CSS for background-based logo */
+        .logo-container {
+            width: 100px;
+            height: 100px;
+            background-image: url('path/to/logo.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
         body {
             display: flex;
             justify-content: space-between;
-            background-color: lightblue;
+            background-color: whitesmoke;
             padding: 20px;
+            overflow: scroll;
+
         }
 
         .form-container {
-            width: 45%;
-            /* Left side width */
+            width: 60%;
+            /* Decrease the width of the form */
+            max-width: 600px;
+            /* Set a max-width to keep it compact */
+            margin: 0 auto;
+            /* Center the form container */
             padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            /* Reduced padding */
+            border: 1px solid #ccc;
+            /* Add a border */
+            border-radius: 10px;
+            /* Rounded corners */
+            background-color: #f9f9f9;
+            /* Light background */
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            /* Add a subtle shadow */
+            overflow: auto;
         }
 
-        .image-container {
-            width: 45%;
-            /* Right side width */
-            padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+
+
+        /* CSS for img-based logo */
+        .company-logo {
+            width: 10px;
+            height: auto;
+            position: absolute;
         }
 
         .error {
@@ -42,21 +93,28 @@
         img {
             max-width: 100%;
             max-height: 400px;
+
         }
     </style>
 </head>
 
 <body>
+
+
     <div class="form-container">
-        <h2>Customer Information Form</h2>
+        <h2>Form Details</h2>
         <form id="customerForm" method="post">
             {% csrf_token %}
             <input type="hidden" id="file_name" name="file_name">
             <div>
                 {{ form.full_name.label_tag }}
                 {{ form.full_name }}
+                <i title="Enter the full legal name of the customer"
+                    style="cursor: pointer;font-family:Poppins,serif; font-weight: bold;position: sticky;background-color:white;font-style: normal">i</i>
+                <!-- Tooltip for the input -->
                 {% if form.full_name.errors %}
                 <div class="error">{{ form.full_name.errors.as_text }}</div>
+
                 {% endif %}
             </div>
             <br>
@@ -64,12 +122,20 @@
                 {{ form.bank_name.label_tag }}
                 {{ form.bank_name }}
             </div>
+
             <br>
+            <div>
+                {{ form.Date.label_tag }}
+                {{ form.Date }}
+            </div>
+            <br>
+
             <div>
                 {{ form.zip_code.label_tag }}
                 {{ form.zip_code }}
             </div>
             <br>
+
             <div>
                 {{ form.state.label_tag }}
                 {{ form.state }}
@@ -83,6 +149,9 @@
             <div>
                 {{ form.phone_number.label_tag }}
                 {{ form.phone_number }}
+                <i title="Enter the full contact details of the customer"
+                    style="cursor: pointer;font-family:Poppins,serif; font-weight: bold;position: sticky;background-color:white;font-style: normal">i</i>
+                <!-- Tooltip for the input -->
                 {% if form.phone_number.errors %}
                 <div class="error">{{ form.phone_number.errors.as_text }}</div>
                 {% endif %}
@@ -93,109 +162,58 @@
                 {{ form.account_number }}
             </div>
             <br>
+            <div>
+                {{ form.Amount.label_tag }}
+                {{ form.Amount }}
+                {% if form.Amount.errors %}
+                <div class="error">{{ form.Amount.errors.as_text }}</div>
+                {% endif %}
+            </div>
+            <br>
+            <div>
+                {{ form.Address.label_tag }}
+                {{ form.Address }}
+            </div>
+            <br>
+            <div>
+                {{ form.FileName.label_tag }}
+                {{ form.FileName }}
+            </div>
+            <br>
             <button type="submit">Submit</button>
         </form>
     </div>
-    <!-- <div id="valueContainer" class="value-container">
-        <h2 style="color:rgb(227, 227, 236);">Fetched Values:</h2>
-    </div> -->
-    <div class="image-container">
-        <h2>Upload Image:</h2>
-        <input type="file" id="imageUpload" class="image-upload" accept="image/*">
-        <h2>Selected Image:</h2>
-        <img id="imagePreview" src="" alt="Selected image" style="display:none;">
-    </div>
+    <img id="imagePreview" style="display: none; max-width: 100%; margin-top: 20px;" alt="Selected Image Preview">
+    <div id="fileName" style="margin-top: 10px; font-weight: bold;"></div>
     <script>
-        // window.onload = function() {
-        //     const storedImage = localStorage.getItem('uploadedImage');
-        //     if (storedImage) {
-        //         const imagePreview = document.getElementById('imagePreview');
-        //         imagePreview.src = storedImage;
-        //         imagePreview.style.display = 'block'; // Show the image
-        //     }
-        // };
+        const searchButton = document.getElementById('searchButton');
+        const fileInput = document.getElementById('fileInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const fileNameDisplay = document.getElementById('fileName');
+        const fileNameInput = document.getElementById('file_name');
+        // Add a click event listener to the button
+        searchButton.addEventListener('click', function () {
+            // Trigger the file selection dialog
+            fileInput.click();
+        });
 
-        // Handle image upload
-        document.getElementById('imageUpload').addEventListener('change', function (event) {
-            const file = event.target.files[0];
-            const imagePreview = document.getElementById('imagePreview');
-            const fileNameInput = document.getElementById('file_name');
-            imagePreview.style.display = 'none'; // Hide image preview
-            fileNameInput.value = ''; // Clear the hidden file name input
-            resetFormFields();
-            if (file) {
+        // Show the selected image in the preview element
+        fileInput.addEventListener('change', function () {
+            const selectedFile = fileInput.files[0];
+            if (selectedFile) {
                 const reader = new FileReader();
                 reader.onload = function (e) {
                     imagePreview.src = e.target.result;
                     imagePreview.style.display = 'block'; // Show the new image
-                    fileNameInput.value = file.name;
-                    localStorage.setItem('uploadedImage', e.target.result); // Store the image in local storage
-                    fetchValuesFromDatabase(file.name);
+                   
                 };
-                reader.readAsDataURL(file);
+                reader.readAsDataURL(selectedFile);
+                fileNameDisplay.textContent = `Selected File: ${selectedFile.name}`;
             }
-            // } else {
-            //     // imagePreview.style.display = 'none'; // Hide if no file is selected
-            //     // localStorage.removeItem('uploadedImage'); // Clear storage if no file
-            //     // fileNameInput.value = '';
-            //     resetForm();
-            // }
         });
-        function resetFormFields() {
-            const form = document.getElementById('customerForm');
-            form.full_name.value = '';
-            form.bank_name.value = '';
-            form.zip_code.value = '';
-            form.state.value = 'AL'; // Default state
-            form.country_code.value = '+91'; // Default country code
-            form.phone_number.value = '';
-            form.account_number.value = '';
-        }
-
-        function fetchValuesFromDatabase(fileName) {
-            fetch(`/get-values/?file_name=${fileName}`)
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    // displayValues(data);
-                    setFormValues(data);
-                })
-                .catch(error => console.error('Error fetching values:', error));
-        }
-
-        // function displayValues(data) {
-        //     // Update the UI with the fetched data
-        //     const valueContainer = document.getElementById('valueContainer');
-        //     valueContainer.innerHTML = '';
-        //     for (const [key, value] of Object.entries(data)) {
-        //         const div = document.createElement('div');
-        //         div.textContent = `${key}: ${value}`;
-        //         valueContainer.appendChild(div);
-        //     }
-        // }
-        function setFormValues(data) {
-            const keyMapping = {
-                "Customer_full_name": "full_name",
-                "BankName": "bank_name",
-                "Zipcode": "zip_code",
-                "State": "state",
-                "Phone_number": "phone_number",
-                "Account_number": "account_number"
-            };
-
-            for (const [key, value] of Object.entries(data)) {
-                const inputName = keyMapping[key];
-                const input = document.querySelector(`[name="${inputName}"]`);
-                if (input) {
-                    input.placeholder = value || ""; // Set the fetched data as a placeholder
-                } else {
-                    console.warn(`Input not found for key: ${inputName}`); // Log if input is not found
-                }
-            }
-        }
-
 
     </script>
+
 </body>
 
 </html>

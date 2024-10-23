@@ -1,0 +1,129 @@
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif; /* Google-like font */
+}
+
+body {
+    background-color: #f4f4f4; /* Google-like background color */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: scroll;
+}
+
+/* Logo */
+.logo {
+    margin-bottom: 50px;
+}
+
+.logo img {
+    width: 50px; /* Size of the Google-like logo */
+}
+
+#logo {
+    width: 200px; /* Set the width as per your requirement */
+    height: auto; /* Maintains the aspect ratio */
+    position: relative;
+}
+
+/* Search Bar Container */
+.search-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 40px;
+}
+
+.search-container input[type="text"] {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #dfe1e5;
+    border-radius: 50px 0 0 50px;
+    font-size: 1.2rem;
+    background-color: #fff;
+    outline: none;
+    box-shadow: 0px 1px 6px rgba(32, 33, 36, 0.28); /* Slight shadow for depth */
+}
+
+.search-container button {
+    background-color: pink; /* Google-like button background */
+    border: 10px solid #dfe1e5;
+    border-left: none;
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    border-radius: 0 50px 50px 0;
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.3s ease;
+}
+
+.search-container button:hover {
+    background-color: #e8e8e8; /* Subtle hover effect */
+}
+
+/* Centering the Page */
+.center-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* Footer */
+.footer {
+    position: absolute;
+    bottom: 20px;
+    color: #555;
+    font-size: 0.85rem;
+}
+
+.footer a {
+    color: #4285f4;
+    text-decoration: none;
+}
+
+/* Form Styles */
+
+
+form {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+form label {
+    font-weight: bold;
+    margin-bottom: 08px;
+    display: block;
+}
+
+form input, form select, form textarea {
+    width: 80%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 11px;
+}
+
+form input[type="submit"] {
+    background-color: #009688;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 15px;
+    border-radius: 5px;
+    font-size: 18px;
+    transition: background-color 0.3s;
+}
+
+form input[type="submit"]:hover {
+    background-color: #00796b;
+}

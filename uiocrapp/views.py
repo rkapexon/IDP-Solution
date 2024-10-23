@@ -1,5 +1,3 @@
-
-# Create your views here.
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from .forms import CustomerForm
@@ -8,7 +6,7 @@ from django.db import connection
 import os
 from django.http import JsonResponse
 
-
+# Create your views here.
 def get_values_view(request):
     file_name = request.GET.get('file_name', '')
     file_name_without_ext = os.path.splitext(file_name)[0]
@@ -21,7 +19,6 @@ def get_values_view(request):
     print(data)
     return JsonResponse(data)
 
-
 def update_origdb(file_name,customer_info):
     og_db = [
     "Customer_full_name",
@@ -30,6 +27,9 @@ def update_origdb(file_name,customer_info):
     "State",
     "Phone_number",
     "Account_number",
+    "Date",
+    "Amount",
+    "Pdf_name"
     ]
     ui_db = [
         "full_name",
@@ -38,7 +38,11 @@ def update_origdb(file_name,customer_info):
         "state",
         "phone_number",
         "account_number",
+        "Date",
+        "Amount",
+        "FileName",
     ]
+    print(file_name)
     file_name_without_ext = os.path.splitext(file_name)[0]
     print(file_name_without_ext)
     orig_records = mydb.objects.using('secondary').filter(formid__startswith=file_name_without_ext)
@@ -54,6 +58,8 @@ def update_origdb(file_name,customer_info):
                orig_record.save(using='secondary')
                print(f"Updated {orig_record.field_name} from {orig_record.OCR_value} to {new_value}")
 
+
+
 def customer_form_view(request):     
     if request.method == 'POST':
         form = CustomerForm(request.POST)
@@ -66,7 +72,11 @@ def customer_form_view(request):
                 country_code = form.cleaned_data['country_code'],
                 phone_number=form.cleaned_data['phone_number'],
                 account_number=form.cleaned_data['account_number'],
-                file_name = form.cleaned_data['file_name']
+                file_name = form.cleaned_data['file_name'],
+                Date=form.cleaned_data['Date'],
+                Amount=form.cleaned_data['Amount'],
+                Address=form.cleaned_data['Address'],
+                FileName=form.cleaned_data['FileName']
             )
             customer_info.save()
             file_name = form.cleaned_data['file_name']

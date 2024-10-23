@@ -107,3 +107,25 @@ class CustomerForm(forms.Form):
         required=False,  # Not required if it’s just for storing the file name
         widget=forms.HiddenInput()
     )
+    Amount = forms.CharField(
+        label="Amount",
+        max_length=100,
+        required=False,  # Not required if it’s just for storing the file name
+        validators=[RegexValidator(regex=r'^\d+$', message='Amount can only contain numbers.')]
+    )
+    Date = forms.CharField(
+        label="Date",
+        max_length=15,
+        required=False,  # Not required if it’s just for storing the file name
+    )
+    Address = forms.CharField(
+        label="Address",
+        max_length=100,
+        required=False,  # Not required if it’s just for storing the file name
+        initial="123 Main St"
+    )
+    FileName = forms.CharField(
+        label="File Name",
+        max_length=50,
+        required=False,  # Not required if it’s just for storing the file name
+    )

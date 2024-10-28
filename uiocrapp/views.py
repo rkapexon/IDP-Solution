@@ -45,7 +45,16 @@ def update_origdb(file_name,customer_info):
     print(file_name)
     file_name_without_ext = os.path.splitext(file_name)[0]
     print(file_name_without_ext)
-    orig_records = mydb.objects.using('secondary').filter(formid__startswith=file_name_without_ext)
+
+    
+    
+    # Print formid for each record before the loop
+   
+    orig_records =mydb.objects.using('secondary').filter(formid__startswith=file_name_without_ext)
+    print(f"Number of records fetched: {orig_records.count()}")
+    for orig_record in orig_records:
+        print(f"Form ID: {orig_record.formid}")
+    
     for orig_record in orig_records:
         print(orig_record.field_name)  
         if orig_record.field_name in og_db:
@@ -62,7 +71,9 @@ def update_origdb(file_name,customer_info):
 
 def customer_form_view(request):     
     if request.method == 'POST':
+
         form = CustomerForm(request.POST)
+        print("POST data:", request.POST)
         if form.is_valid():
             customer_info = CustomerInfo(
                 full_name=form.cleaned_data['full_name'],
@@ -79,7 +90,10 @@ def customer_form_view(request):
                 FileName=form.cleaned_data['FileName']
             )
             customer_info.save()
+            print("hello")
             file_name = form.cleaned_data['file_name']
+            file_name_without_ext = os.path.splitext(file_name)[0]
+            print(f"File name without extension: {file_name_without_ext}")
             update_origdb(file_name,customer_info)
                        
     else:

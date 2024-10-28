@@ -1,218 +1,304 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html> <!-- Declares the document type and version of HTML -->
+<html lang="en"> <!-- Opens the HTML document and specifies the language as English -->
 
-<head>
-    <meta charset="UTF-8">
+<head> <!-- Opens the head section of the document -->
+    <meta charset="UTF-8"> <!-- Sets the character encoding for the document to UTF-8 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Ensures responsive design on mobile devices -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Links to Bootstrap CSS for styling -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Lobster&display=swap"
-        rel="stylesheet">
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}"> <!-- Link to your style CSS file -->
-    <header>
+        rel="stylesheet"> <!-- Links to Google Fonts for custom fonts -->
+    {% load static %} <!-- Django template tag to load static files -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <!-- Links to custom CSS file in the static directory -->
+    <header> <!-- Opens the header section of the document -->
         <img src="static/images/Logo.jpg" alt="Logo" id="logo">
-    </header>
-
-    <div class="header">
-        <h1>Intelligent Document Processing</h1>
-
-    </div>
+        <!-- Displays the logo image with an alt text and an ID -->
+    </header> <!-- Closes the header section -->
+    <div class="header"> <!-- Opens a div with class 'header' for additional styling -->
+        <h1>Intelligent Document Processing</h1> <!-- Main heading of the page -->
+    </div> <!-- Closes the div -->
 
     <!-- Search Bar -->
-    <div class="search-container">
-        <input type="text" placeholder="Search documents..." id="searchInput " autocomplete="on">
-        <button id="searchButton">Search</button>
-        <input type="file" id="fileInput" style="display: none;" color:whte />
-        <div id="suggestionsBox" class="suggestions"></div>
+    <div class="search-container"> <!-- Opens a div to contain the search elements -->
+        <input type="text" placeholder="Search documents..." id="searchInput" autocomplete="on">
+        <!-- Input field for entering search queries, with a placeholder and autocomplete enabled -->
+        <button id="searchButton">Search</button> <!-- Button to trigger the search action -->
+        <input type="file" id="fileInput" style="display: none;" color="white" />
+        <!-- Hidden file input for uploading documents, styled to be invisible -->
+        <div id="suggestionsBox" class="suggestions"></div> <!-- Div to display search suggestions dynamically -->
         <!-- Hidden File Input -->
-
     </div>
-  
+
+
     <style>
         /* CSS for img-based logo */
         .company-logo {
             width: 10px;
+            /* Set the width of the logo */
             height: fit-content;
+            /* Adjust the height to fit the content */
             position: absolute;
-
+            /* Position the logo absolutely within its containing element */
         }
 
         /* CSS for background-based logo */
         .logo-container {
             width: 100px;
+            /* Set the width of the logo container */
             height: 100px;
+            /* Set the height of the logo container */
             background-image: url('path/to/logo.png');
+            /* Set the background image for the logo */
             background-size: contain;
+            /* Scale the background image to fit within the container */
             background-repeat: no-repeat;
+            /* Prevent the background image from repeating */
             background-position: center;
+            /* Center the background image within the container */
         }
 
         body {
             display: flex;
+            /* Use flexbox layout for the body */
             justify-content: space-between;
+            /* Distribute child elements with space between them */
             background-color: whitesmoke;
+            /* Set a light background color for the body */
             padding: 20px;
+            /* Add padding around the body content */
             overflow: scroll;
-
+            /* Allow scrolling if content overflows */
         }
 
         .form-container {
             width: 60%;
-            /* Decrease the width of the form */
+            /* Set the width of the form container to 60% of its parent */
             max-width: 600px;
-            /* Set a max-width to keep it compact */
+            /* Set a maximum width for the form container */
             margin: 0 auto;
-            /* Center the form container */
+            /* Center the form container horizontally */
             padding: 20px;
-            /* Reduced padding */
+            /* Add padding inside the form container */
             border: 1px solid #ccc;
-            /* Add a border */
+            /* Add a light gray border around the container */
             border-radius: 10px;
-            /* Rounded corners */
+            /* Round the corners of the container */
             background-color: #f9f9f9;
-            /* Light background */
+            /* Set a light background color for the form */
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            /* Add a subtle shadow */
+            /* Add a subtle shadow effect to the form */
             overflow: auto;
-        }
-
-
-
-        /* CSS for img-based logo */
-        .company-logo {
-            width: 10px;
-            height: auto;
-            position: absolute;
+            /* Allow scrolling if content overflows */
         }
 
         .error {
             color: red;
+            /* Set the text color to red for error messages */
             font-size: 0.9em;
+            /* Set the font size for error messages */
         }
 
         img {
             max-width: 100%;
+            /* Limit the image width to 100% of its container */
             max-height: 400px;
-
+            /* Limit the image height to a maximum of 400 pixels */
         }
     </style>
 </head>
 
 <body>
+    <div class="container d-flex justify-content-between"> <!-- Flex container for side-by-side layout -->
+        <div class="form-container"> <!-- Container for the form to ensure proper styling and layout -->
+            <h2>Form Details</h2> <!-- Heading for the form section -->
+            <form id="customerForm" method="post"> <!-- Form element with POST method for submitting data -->
+                {% csrf_token %}
+                <!-- Django template tag for including a CSRF token to protect against cross-site request forgery -->
+                <input type="hidden" id="file_name" name="file_name"> <!-- Hidden input to store the file name -->
+                <div> <!-- Container for full name input -->
+                    {{ form.full_name.label_tag }} <!-- Renders the label for the full name field -->
+                    {{ form.full_name }} <!-- Renders the input field for the full name -->
+                    <i title="Enter the full legal name of the customer"
+                        style="cursor: pointer;font-family:Poppins,serif; font-weight: bold;position: sticky;background-color:white;font-style: normal">i</i>
+                    <!-- Tooltip icon to provide information about the input -->
+                    {% if form.full_name.errors %} <!-- Check for errors in the full name field -->
+                    <div class="error">{{ form.full_name.errors.as_text }}</div>
+                    <!-- Display error messages if present -->
+                    {% endif %}
+                </div>
+                <br> <!-- Line break for spacing -->
+                <div> <!-- Container for bank name input -->
+                    {{ form.bank_name.label_tag }} <!-- Renders the label for the bank name field -->
+                    {{ form.bank_name }} <!-- Renders the input field for the bank name -->
+                </div>
+                <br>
+                <div> <!-- Container for date input -->
+                    {{ form.Date.label_tag }} <!-- Renders the label for the date field -->
+                    {{ form.Date }} <!-- Renders the input field for the date -->
+                </div>
+                <br>
+                <div> <!-- Container for zip code input -->
+                    {{ form.zip_code.label_tag }} <!-- Renders the label for the zip code field -->
+                    {{ form.zip_code }} <!-- Renders the input field for the zip code -->
+                </div>
+                <br>
+                <div> <!-- Container for state input -->
+                    {{ form.state.label_tag }} <!-- Renders the label for the state field -->
+                    {{ form.state }} <!-- Renders the input field for the state -->
+                </div>
+                <br>
+                <div> <!-- Container for country code input -->
+                    {{ form.country_code.label_tag }} <!-- Renders the label for the country code field -->
+                    {{ form.country_code }} <!-- Renders the input field for the country code -->
+                </div>
+                <br>
+                <div> <!-- Container for phone number input -->
+                    {{ form.phone_number.label_tag }} <!-- Renders the label for the phone number field -->
+                    {{ form.phone_number }} <!-- Renders the input field for the phone number -->
+                    <i title="Enter the full contact details of the customer"
+                        style="cursor: pointer;font-family:Poppins,serif; font-weight: bold;position: sticky;background-color:white;font-style: normal">i</i>
+                    <!-- Tooltip icon to provide information about the input -->
+                    {% if form.phone_number.errors %} <!-- Check for errors in the phone number field -->
+                    <div class="error">{{ form.phone_number.errors.as_text }}</div>
+                    <!-- Display error messages if present -->
+                    {% endif %}
+                </div>
+                <br>
+                <div> <!-- Container for account number input -->
+                    {{ form.account_number.label_tag }} <!-- Renders the label for the account number field -->
+                    {{ form.account_number }} <!-- Renders the input field for the account number -->
+                </div>
+                <br>
+                <div> <!-- Container for amount input -->
+                    {{ form.Amount.label_tag }} <!-- Renders the label for the amount field -->
+                    {{ form.Amount }} <!-- Renders the input field for the amount -->
+                    {% if form.Amount.errors %} <!-- Check for errors in the amount field -->
+                    <div class="error">{{ form.Amount.errors.as_text }}</div> <!-- Display error messages if present -->
+                    {% endif %}
+                </div>
+                <br>
+                <div> <!-- Container for address input -->
+                    {{ form.Address.label_tag }} <!-- Renders the label for the address field -->
+                    {{ form.Address }} <!-- Renders the input field for the address -->
+                </div>
+                <br>
+                <div> <!-- Container for file name input -->
+                    {{ form.FileName.label_tag }} <!-- Renders the label for the file name field -->
+                    {{ form.FileName }} <!-- Renders the input field for the file name -->
+                </div>
+                <br>
+                <button type="submit">Submit</button> <!-- Submit button for the form -->
+            </form>
+        </div>
+        <div class="form-container">
+            <input type="file" id="fileInput" style="display: none;" />
+            <img id="imagePreview" style="display: none; max-width: 100%; margin-top: 20px;"
+                alt="Selected Image Preview">
+            <div id="fileNameDisplay" style="margin-top: 10px; font-weight: bold;"></div>
+            <!-- Element to display the file name -->
+        </div>
 
 
-    <div class="form-container">
-        <h2>Form Details</h2>
-        <form id="customerForm" method="post">
-            {% csrf_token %}
-            <input type="hidden" id="file_name" name="file_name">
-            <div>
-                {{ form.full_name.label_tag }}
-                {{ form.full_name }}
-                <i title="Enter the full legal name of the customer"
-                    style="cursor: pointer;font-family:Poppins,serif; font-weight: bold;position: sticky;background-color:white;font-style: normal">i</i>
-                <!-- Tooltip for the input -->
-                {% if form.full_name.errors %}
-                <div class="error">{{ form.full_name.errors.as_text }}</div>
 
-                {% endif %}
-            </div>
-            <br>
-            <div>
-                {{ form.bank_name.label_tag }}
-                {{ form.bank_name }}
-            </div>
+        <script>
+            // Get references to necessary elements
+            const searchButton = document.getElementById('searchButton'); // Search button element
+            const fileInput = document.getElementById('fileInput'); // Hidden file input element
+            const imagePreview = document.getElementById('imagePreview'); // Image preview element
+            const fileNameInput = document.getElementById('file_name'); // Hidden input for file name
+            const fileNameDisplay = document.getElementById('fileNameDisplay'); // Element to display the file name
 
-            <br>
-            <div>
-                {{ form.Date.label_tag }}
-                {{ form.Date }}
-            </div>
-            <br>
+            // Add a click event listener to the search button
+            searchButton.addEventListener('click', function () {
+                // Trigger the file selection dialog
+                fileInput.click();
+            });
 
-            <div>
-                {{ form.zip_code.label_tag }}
-                {{ form.zip_code }}
-            </div>
-            <br>
+            // Handle image upload and display
+            fileInput.addEventListener('change', function (event) {
+                //resetFormFields();
+                const selectedFile = event.target.files[0]; // Get the first selected file
 
-            <div>
-                {{ form.state.label_tag }}
-                {{ form.state }}
-            </div>
-            <br>
-            <div>
-                {{ form.country_code.label_tag }}
-                {{ form.country_code }}
-            </div>
-            <br>
-            <div>
-                {{ form.phone_number.label_tag }}
-                {{ form.phone_number }}
-                <i title="Enter the full contact details of the customer"
-                    style="cursor: pointer;font-family:Poppins,serif; font-weight: bold;position: sticky;background-color:white;font-style: normal">i</i>
-                <!-- Tooltip for the input -->
-                {% if form.phone_number.errors %}
-                <div class="error">{{ form.phone_number.errors.as_text }}</div>
-                {% endif %}
-            </div>
-            <br>
-            <div>
-                {{ form.account_number.label_tag }}
-                {{ form.account_number }}
-            </div>
-            <br>
-            <div>
-                {{ form.Amount.label_tag }}
-                {{ form.Amount }}
-                {% if form.Amount.errors %}
-                <div class="error">{{ form.Amount.errors.as_text }}</div>
-                {% endif %}
-            </div>
-            <br>
-            <div>
-                {{ form.Address.label_tag }}
-                {{ form.Address }}
-            </div>
-            <br>
-            <div>
-                {{ form.FileName.label_tag }}
-                {{ form.FileName }}
-            </div>
-            <br>
-            <button type="submit">Submit</button>
-        </form>
-    </div>
-    <img id="imagePreview" style="display: none; max-width: 100%; margin-top: 20px;" alt="Selected Image Preview">
-    <div id="fileName" style="margin-top: 10px; font-weight: bold;"></div>
-    <script>
-        const searchButton = document.getElementById('searchButton');
-        const fileInput = document.getElementById('fileInput');
-        const imagePreview = document.getElementById('imagePreview');
-        const fileNameDisplay = document.getElementById('fileName');
-        const fileNameInput = document.getElementById('file_name');
-        // Add a click event listener to the button
-        searchButton.addEventListener('click', function () {
-            // Trigger the file selection dialog
-            fileInput.click();
-        });
+                imagePreview.style.display = 'none'; // Hide the image preview initially
+                fileNameInput.value = ''; // Clear the hidden file name input
+                fileNameDisplay.textContent = ''; // Clear the displayed file name
+                //resetFormFields();
+                if (selectedFile) { // Check if a file was selected
+                    const reader = new FileReader(); // Create a new FileReader object
+                    reader.onload = function (e) { // Set up an event listener for when the file is read
+                        imagePreview.src = e.target.result; // Set the image source to the result of the file read
+                        imagePreview.style.display = 'block'; // Show the new image preview
+                        fileNameInput.value = selectedFile.name; // Set the hidden input value to the name of the uploaded file
+                        fileNameDisplay.textContent = selectedFile.name; // Display the selected file name
+                        localStorage.setItem('uploadedImage', e.target.result); // Store the image data in local storage
+                        // Uncomment the following line to fetch related values from a database
+                        fetchValuesFromDatabase(selectedFile.name);
+                    };
+                    reader.readAsDataURL(selectedFile); // Read the selected file as a data URL
+                    resetFormFields();
+                }
+                else {
+                    imagePreview.style.display = 'none'; // Hide if no file is selected
+                    localStorage.removeItem('uploadedImage'); // Clear storage if no file
+                    fileNameInput.value = '';
+                }
+            });
 
-        // Show the selected image in the preview element
-        fileInput.addEventListener('change', function () {
-            const selectedFile = fileInput.files[0];
-            if (selectedFile) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    imagePreview.src = e.target.result;
-                    imagePreview.style.display = 'block'; // Show the new image
-                   
-                };
-                reader.readAsDataURL(selectedFile);
-                fileNameDisplay.textContent = `Selected File: ${selectedFile.name}`;
+            // Function to reset all form fields to their default values
+            function resetFormFields() {
+                const form = document.getElementById('customerForm');
+                form.full_name.value = '';
+                form.bank_name.value = '';
+                form.zip_code.value = '';
+                form.state.value = 'AL'; // Default state
+                form.country_code.value = '+91'; // Default country code
+                form.phone_number.value = '';
+                form.account_number.value = '';
+                form.Date.value = '';
+                form.Amount.value = '';
+                form.Address.value = '';
+                form.fileName.value = '';
             }
-        });
+            // Function to fetch values related to the uploaded file from the database
+            function fetchValuesFromDatabase(fileName) {
+                fetch(`/get-values/?file_name=${fileName}`)
+                    .then(response => response.json())// Parse the JSON response
+                    .then(data => {
+                        console.log(data);// Log the fetched data
+                        setFormValues(data);
+                    })
+                    .catch(error => console.error('Error fetching values:', error));
+            }
+            // Function to set form values based on the fetched data
+            function setFormValues(data) {
+                // Map the keys from the fetched data to the form input names
+                const keyMapping = {
+                    "Customer_full_name": "full_name",
+                    "BankName": "bank_name",
+                    "Zipcode": "zip_code",
+                    "State": "state",
+                    "Phone_number": "phone_number",
+                    "Account_number": "account_number",
+                    "Date": "Date",
+                    "Amount": "Amount",
+                    "Pdf_name": "FileName"
+                };
 
-    </script>
+                for (const [key, value] of Object.entries(data)) {
+                    const inputName = keyMapping[key];
+                    const input = document.querySelector(`[name="${inputName}"]`);
+                    if (input) {
+                        input.placeholder = value || ""; // Set the fetched data as a placeholder
+                    } else {
+                        console.warn(`Input not found for key: ${inputName}`); // Log if input is not found
+                    }
+                }
+            }
+
+
+        </script>
 
 </body>
 

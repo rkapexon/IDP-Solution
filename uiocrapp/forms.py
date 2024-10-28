@@ -74,31 +74,37 @@ class CustomerForm(forms.Form):
     bank_name = forms.CharField(
         label="Name of the Bank",
         max_length=100,
+        required=False,
         widget=forms.TextInput(attrs={'placeholder': 'Bank Name'})
     )
     zip_code = forms.CharField(
         label="Zip Code",
         max_length=10,
+        required=False,
         widget=forms.TextInput(attrs={'placeholder': '12345678'})
     )
     state = forms.ChoiceField(
         choices=us_states,
         label="State",
+        required=False,
         initial="AL",
     )
     country_code = forms.ChoiceField(
         choices=country_codes,
         label='Country Code',
+        required=False,
         initial='+91',  # Default selected value (India)
     )
     phone_number = forms.CharField(
         label="Phone Number",
         max_length=15,
+        required=False,
         validators=[RegexValidator(regex=r'^\d+$', message='Phone number can only contain numbers.')]
     )
     account_number = forms.CharField(
         label="Full Account Number",
         max_length=15,
+        required=False,
         widget=forms.TextInput(attrs={'placeholder': 'Account Number'})
     )
     file_name = forms.CharField(
@@ -122,7 +128,6 @@ class CustomerForm(forms.Form):
         label="Address",
         max_length=100,
         required=False,  # Not required if it’s just for storing the file name
-        initial="123 Main St"
     )
     FileName = forms.CharField(
         label="File Name",
